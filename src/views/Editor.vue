@@ -1,20 +1,22 @@
-<script lang="ts">
-import LText from '../components/LText.vue'
-export default {
+<script lang="ts" setup>
+import LText from '@/components/LText.vue'
+import { defineOptions } from 'vue'
+import ComponentsList from '@/components/ComponentsList.vue'
+import EditorWrapper from '@/components/EditorWrapper.vue'
+import PropsTable from '@/components/PropsTable.vue'
+import { defaultTextTemplates } from '../defaultTemplates'
+import { useEditorStore } from '../store/Editor'
+defineOptions({
   components: {
     LText
   }
-}
-</script>
-<script setup lang="ts">
-import ComponentsList from '../components/ComponentsList.vue'
-import { defaultTextTemplates } from '../defaultTemplates'
-import { useEditorStore } from '../store/Editor'
+})
 const editorStore = useEditorStore()
 const addItem = (props: any) => {
   editorStore.addComponent(props)
 }
 </script>
+
 <template>
 <div class="editor" id="editor-layout-main">
   <a-layout :style="{backgroundColor: '#fff'}">
@@ -23,7 +25,7 @@ const addItem = (props: any) => {
     </a-layout-header>
   </a-layout>
   <a-layout>
-    <a-layout-sider width="300" :style="{backgroundColor: 'yellow'}">
+    <a-layout-sider width="300" :style="{backgroundColor: '#fff'}">
       <div class="slider-container">
         组件列表
         <ComponentsList :list="defaultTextTemplates" @onItemClick="addItem"/>
@@ -31,19 +33,29 @@ const addItem = (props: any) => {
     </a-layout-sider>
     <a-layout :style="{padding: '0 24px 24px'}">
       <a-layout-content class="preview-container">
-        <p>画布区域</p>
+        <p>画布区域:</p>
         <div class="preview-list" id="canvas-area">
-          <!-- <div v-for="item in editorStore.components" :key="item.id">{{ item.props.text }}</div> -->
-           <component 
+           <editor-wrapper 
             v-for="component in editorStore.components" 
             :key="component.id"
-            :is="component.name"
-            v-bind="component.props"></component>
+            :id="component.id"
+            :active="editorStore.currentElement?.id === component.id"
+            @setActive="editorStore.setActive"
+            >
+            <component :is="component.name" v-bind="component.props"></component>
+          </editor-wrapper>
         </div>
       </a-layout-content>
     </a-layout>
-    <a-layout-sider width="300" :style="{backgroundColor: 'purple'}" class="settings">
-        组件属性
+    <a-layout-sider width="300" :style="{backgroundColor: '#fff'}" class="settings">
+      组件属性
+        <props-table 
+        v-if="editorStore.currentElement && editorStore.currentElement.props" 
+        :props="editorStore.currentElement.props">
+        </props-table>
+        <pre>
+          {{ editorStore.currentElement && editorStore.currentElement.props}}
+        </pre>
     </a-layout-sider>
   </a-layout>
 
@@ -58,5 +70,8 @@ const addItem = (props: any) => {
 }
 ::v-deep .l-text-component {
     position: relative !important;
+  }
+  .settings {
+    text-align: left;
   }
 </style>

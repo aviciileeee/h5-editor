@@ -27,6 +27,7 @@ const contentStyle: CSSProperties = {
   textAlign: 'center',
   color: '#fff',
   flex: 1,
+  backgroundColor: '#fff'
 }
 
 const footerStyle: CSSProperties = {

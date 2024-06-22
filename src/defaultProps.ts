@@ -1,6 +1,30 @@
 import {  extend, mapValues , without} from 'lodash-es'
-
-export const commonDefaultProps = {
+export interface CommonComponentProps {
+    // actions
+    actionType: string;
+    url:  string;
+    // size
+    height: string;
+    width: string;
+    paddingLeft: string;
+    paddingRight: string;
+    paddingTop: string;
+    paddingBottom: string;
+    // borderType
+    borderStyle: string;
+    borderColor: string;
+    borderWidth: string;
+    borderRadius: string;
+    // shadow and opacity
+    boxShadow: string;
+    opacity: number;
+    // position
+    position: string;
+    left: string;
+    top: string;
+    right: string;
+}
+export const commonDefaultProps: CommonComponentProps = {
   // actions
   actionType: '',
   url:  '',
@@ -26,6 +50,19 @@ export const commonDefaultProps = {
   right: '0'
 }
 
+export interface TextComponentProps extends CommonComponentProps {
+  text: string;
+  fontSize: string;
+  fontFamily: string;
+  fontWeight: string;
+  fontStyle: string;
+  textDecoration: string;
+  lineHeight: string;
+  textAlign: string;
+  color: string;
+  backgroundColor: string;
+}
+
 export const textDefaultProps  = {
   text: '正文内容',
   fontSize: '14px',
@@ -33,7 +70,7 @@ export const textDefaultProps  = {
   fontWeight: 'normal',
   fontStyle: 'normal',
   textDecoration: 'none',
-  lintHeight: '1',
+  lineHeight: '1',
   textAlign: 'left',
   color: '#000000',
   backgroundColor: '',

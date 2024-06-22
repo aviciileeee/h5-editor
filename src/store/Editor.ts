@@ -1,35 +1,39 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-export interface EditorProps {
-  components: ComponentData[];
-  currentElemet: string;
+import { TextComponentProps } from '../defaultProps'
+export interface EditorProps<T> {
+  components: ComponentData<T>[];
+  currentElement: ComponentData<T>;
 }
 
-export interface ComponentData {
-  props: {
-    [key: string]: any;
-  };
+export interface ComponentData<T> {
+  props: T;
   id: string;
   name: string;
 }
 
-export const testComponents: ComponentData[] = [
-  { id: uuidv4(), name: 'l-text',props: { text:'hello', fontSize: '20px', color: 'red'} },
-  { id: uuidv4(), name: 'l-text',props: { text:'hello2', fontSize: '15px', fontWeight: 'bold'} },
+export const testComponents: ComponentData<Partial<TextComponentProps>>[] = [
+  { id: uuidv4(), name: 'l-text',props: { text:'hello', lineHeight: '1', fontSize: '20px', color: 'red', textAlign: 'center', fontFamily: 'FangSon'} },
+  { id: uuidv4(), name: 'l-text',props: { text:'hello2', fontSize: '15px',lineHeight: '1', fontWeight: 'bold', textAlign: 'right '} },
   { id: uuidv4(), name: 'l-text',props: { text:'hello3', fontSize: '10px', actionType: 'url', url: 'https://www.baidu.com/'} }
 ]
 
 export const useEditorStore = defineStore('editorStore', () => {
   const components = ref(testComponents)
-  const currentElement = ref('')
-  const addComponent = (props: {[key: string]: any}) => {
+  const currentElement = ref()
+  const addComponent = (props: Partial<TextComponentProps>) => {
     components.value.push({ id: uuidv4(), name: 'l-text', props})
+  }
+  const setActive = (id: string) => {
+    const activeElement = components.value.find(item => item.id === id)
+    currentElement.value = activeElement
   }
   return {
     components,
     currentElement,
-    addComponent
+    addComponent,
+    setActive
   }
 })
 
