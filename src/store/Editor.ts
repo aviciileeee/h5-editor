@@ -21,7 +21,7 @@ export const testComponents: ComponentData<Partial<TextComponentProps>>[] = [
 
 export const useEditorStore = defineStore('editorStore', () => {
   const components = ref(testComponents)
-  const currentElement = ref()
+  const currentElement = ref<ComponentData<Partial<TextComponentProps>>>()
   const addComponent = (props: Partial<TextComponentProps>) => {
     components.value.push({ id: uuidv4(), name: 'l-text', props})
   }
@@ -29,11 +29,17 @@ export const useEditorStore = defineStore('editorStore', () => {
     const activeElement = components.value.find(item => item.id === id)
     currentElement.value = activeElement
   }
+  const updateComponent = ({key, value}: {key: keyof TextComponentProps; value: any}) => {
+    if(currentElement.value) {
+      currentElement.value.props[key] = value
+    }
+  }
   return {
     components,
     currentElement,
     addComponent,
-    setActive
+    setActive,
+    updateComponent
   }
 })
 

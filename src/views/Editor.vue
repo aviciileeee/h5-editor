@@ -6,6 +6,7 @@ import EditorWrapper from '@/components/EditorWrapper.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '../defaultTemplates'
 import { useEditorStore } from '../store/Editor'
+import { TextComponentProps } from '@/defaultProps'
 defineOptions({
   components: {
     LText
@@ -14,6 +15,9 @@ defineOptions({
 const editorStore = useEditorStore()
 const addItem = (props: any) => {
   editorStore.addComponent(props)
+}
+const handleChange = (e: {key: keyof TextComponentProps; value: any}) => {
+  editorStore.updateComponent(e)
 }
 </script>
 
@@ -51,7 +55,8 @@ const addItem = (props: any) => {
       组件属性
         <props-table 
         v-if="editorStore.currentElement && editorStore.currentElement.props" 
-        :props="editorStore.currentElement.props">
+        :props="editorStore.currentElement.props"
+        @change="handleChange">
         </props-table>
         <pre>
           {{ editorStore.currentElement && editorStore.currentElement.props}}

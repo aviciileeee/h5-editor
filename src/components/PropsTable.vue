@@ -2,33 +2,57 @@
 import { TextComponentProps } from '@/defaultProps'
 import { mapPropsToForms, PropsToForms } from '@/propsMap'
 import { reduce } from 'lodash-es'
-import { computed, defineProps,PropType } from 'vue'
+import { computed, defineProps,PropType, defineEmits } from 'vue'
+interface FormProps {
+  component: string;
+  subComponent?: string;
+  value: string | number;
+  extraProps?: {
+    [key: string]: any;
+  };
+  text?: string;
+  options?: {text: string; value: any}[]; 
+  initialTransform?: (v: any) => any; 
+  valueProp?: string;
+  eventName: string;
+  events: {[key: string]: (e: any) => void};
+}
 const props = defineProps({
   props: {
     type: Object as PropType<TextComponentProps>,
     required: true
   }
 })
+const emits = defineEmits(['change'])
 const finalProps = computed(() => {
   return reduce(props.props, (result, value, key) => {
     const newKey = key as keyof TextComponentProps
     const item = mapPropsToForms[newKey]
     if(item) {
-      item.value = item.initialTransform ? item.initialTransform(value) : value
-      item.valueProp = item.valueProp ? item.valueProp : 'value'
-      result[newKey] = item
+      const {valueProp = 'value', eventName = 'change', initialTransform, afterTransform } = item
+      const newItem: FormProps = {
+        ...item,
+        value: initialTransform ? initialTransform(value) : value,
+        valueProp,
+        eventName,
+        events: {
+          [eventName]: (e: any) => { emits('change', {key, value: afterTransform ? afterTransform(e) : e})}
+        }
+      }
+      // item.value = item.initialTransform ? item.initialTransform(value) : value
+      // item.valueProp = item.valueProp ? item.valueProp : 'value'
+      result[newKey] = newItem
     }
     return result
-  }, {} as PropsToForms)
+  }, {} as {[key: string]: FormProps})
 })
-// finalProps.value
 </script>
 <template>
 <div class="props-table">
   <div v-for="(value, key) in finalProps" :key="key" class="prop-item">
     <span class="label" v-if="value?.text">{{ value.text }}</span>
     <div class="prop-component">
-      <component v-if="value" :is="value.component" :[value.valueProp!]="value.value" v-bind="value.extraProps">
+      <component v-if="value" :is="value.component" v-on="value.events" :[value.valueProp!]="value.value" v-bind="value.extraProps">
         <template v-if="value.options">
             <component :is="value.subComponent" v-for="(option, k) in value.options" :key="k" :value="option.value">{{ option.text }}</component>
         </template>
