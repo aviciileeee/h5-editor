@@ -1,30 +1,43 @@
 <template>
-  <h1>慕课乐高标准模版</h1>
-  <ul>
-    <li>开箱即用</li>
-    <li>typescript</li>
-    <li>Vue3</li>
-    <li>支持 tsx</li>
-    <li>eslint</li>
-    <li>简单易用可扩展</li>
-  </ul>
+ <a-layout style="display: flex;minHeight: 100%;">
+  <a-layout-header :style="headerStyle">
+    <h1 @click="router.push('/')">编辑器</h1>
+  </a-layout-header>
+  <a-layout-content :style="contentStyle">
+    <RouterView/>
+  </a-layout-content>
+  <a-layout-footer :style="footerStyle">CopyRight Info</a-layout-footer>
+</a-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
+<script lang="ts" setup>
+import type { CSSProperties } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const headerStyle: CSSProperties = {
+  textAlign: 'left',
+  color: '#fff',
+  height: 64,
+  paddingInline: 50,
+  lineHeight: '64px',
+  backgroundColor: '#7dbcea',
+}
 
-export default defineComponent({
-  name: "App",
-})
+const contentStyle: CSSProperties = {
+  textAlign: 'center',
+  color: '#fff',
+  flex: 1,
+}
+
+const footerStyle: CSSProperties = {
+  textAlign: 'center',
+  color: '#000',
+  backgroundColor: '#eeeeee',
+}
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  min-height: 100vh;
 }
 </style>
