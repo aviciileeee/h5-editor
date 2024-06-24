@@ -1,4 +1,6 @@
 <template>
+    <Uploader action="https://jsonplaceholder.typicode.com/posts/"/>
+
  <a-layout style="display: flex;minHeight: 100%;">
   <a-layout-header :style="headerStyle">
     <h1 @click="router.push('/')">编辑器</h1>
@@ -11,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+import Uploader from './components/Uploader.vue'
 import type { CSSProperties } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
