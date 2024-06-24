@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { VNode } from 'vue'
 import { TextComponentProps } from '@/defaultProps'
 import { mapPropsToForms, PropsToForms } from '@/propsMap'
 import { reduce } from 'lodash-es'
 import { computed, defineProps,PropType, defineEmits } from 'vue'
+import RenderVnode from '@/components/RenderVnode'
 interface FormProps {
   component: string;
   subComponent?: string;
@@ -11,7 +13,7 @@ interface FormProps {
     [key: string]: any;
   };
   text?: string;
-  options?: {text: string; value: any}[]; 
+  options?: {text: string | VNode; value: any}[]; 
   initialTransform?: (v: any) => any; 
   valueProp?: string;
   eventName: string;
@@ -54,7 +56,9 @@ const finalProps = computed(() => {
     <div class="prop-component">
       <component v-if="value" :is="value.component" v-on="value.events" :[value.valueProp!]="value.value" v-bind="value.extraProps">
         <template v-if="value.options">
-            <component :is="value.subComponent" v-for="(option, k) in value.options" :key="k" :value="option.value">{{ option.text }}</component>
+            <component :is="value.subComponent" v-for="(option, k) in value.options" :key="k" :value="option.value">
+              <render-vnode :v-node="option.text"></render-vnode>
+            </component>
         </template>
       </component>
     </div>

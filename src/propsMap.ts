@@ -1,4 +1,5 @@
 import { TextComponentProps } from '@/defaultProps'
+import { h, VNode} from 'vue'
 export interface PropToForm {
   component: string;
   subComponent?: string;
@@ -7,7 +8,7 @@ export interface PropToForm {
     [key: string]: any;
   };
   text?: string;
-  options?: {text: string; value: any}[]; 
+  options?: {text: string | VNode; value: any}[]; 
   initialTransform?: (v: any) => any; 
   afterTransform?: (v: any) => any; 
   valueProp?: string;
@@ -18,6 +19,16 @@ export type PropsToForms  = {
   [P in keyof TextComponentProps]?: PropToForm 
 }
 
+const fontFamilyArr = [
+  {text: '宋体', value: '"SimSun","STSong"'},
+  {text: '仿宋', value: '"FangSong","STFangSong"'}
+]
+const fontFamilyOptions =fontFamilyArr.map(font => {
+  return {
+    value: font.value,
+    text: h('span', { style: {fontFamily: font.value}}, font.text)
+  }
+})
 export const mapPropsToForms: PropsToForms = {
   text: {
     component: 'a-textarea',
@@ -60,9 +71,8 @@ export const mapPropsToForms: PropsToForms = {
     subComponent: 'a-select-option',
     text: '字体',
     options: [
-      {value: '', text: '无'},
-      {value: '宋体', text: '"SimSun","STSong"'},
-      {value: '仿宋', text: '"FangSong","STFangSong"'}
+      {text: '无', value: ''},
+      ...fontFamilyOptions
     ]
   }
 }
